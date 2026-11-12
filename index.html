@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mapa konkurencji Szczecin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --surface-2:#E8EEF2; --line:#D3DCE3;
+  --ink:#13222F; --ink-2:#4C5D6B; --navy:#0E2A47; --accent:#1F7A8C; --accent-ink:#FFFFFF;
+  --hi:#B8432F; --hi-bg:#F8E3DE; --mid:#9A6A10; --mid-bg:#F7EBD2; --lo:#2F7A4E; --lo-bg:#DDEFE3;
+  --s-morska:#1F7A8C; --s-wiatr:#3A8D5C; --s-it:#5B5FA8; --s-bss:#B07A2A; --s-inne:#6B7785; --s-przem:#8A5A7A;
+  --f-display:"Spectral", Georgia, "Times New Roman", serif;
+  --f-body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --shadow:0 1px 2px rgba(14,42,71,.06), 0 4px 14px rgba(14,42,71,.06);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0D1620; --surface:#14212D; --surface-2:#1B2B39; --line:#2A3B4A;
+  --ink:#E4ECF2; --ink-2:#9DB0BF; --navy:#CFE1EE; --accent:#4FB3C6; --accent-ink:#06202A;
+  --hi:#F08A74; --hi-bg:#3A1F1A; --mid:#E5B65A; --mid-bg:#33280F; --lo:#6CC492; --lo-bg:#16301F;
+  --s-morska:#4FB3C6; --s-wiatr:#6CC492; --s-it:#9EA2E8; --s-bss:#E0AE5E; --s-inne:#9DB0BF; --s-przem:#D49BC2;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0D1620; --surface:#14212D; --surface-2:#1B2B39; --line:#2A3B4A;
+  --ink:#E4ECF2; --ink-2:#9DB0BF; --navy:#CFE1EE; --accent:#4FB3C6; --accent-ink:#06202A;
+  --hi:#F08A74; --hi-bg:#3A1F1A; --mid:#E5B65A; --mid-bg:#33280F; --lo:#6CC492; --lo-bg:#16301F;
+  --s-morska:#4FB3C6; --s-wiatr:#6CC492; --s-it:#9EA2E8; --s-bss:#E0AE5E; --s-inne:#9DB0BF; --s-przem:#D49BC2;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 4px 14px rgba(0,0,0,.25); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--bg);margin:0;padding:0}
+body{color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1680px;margin:0 auto;padding-left:16px;padding-right:16px}
+header.top{position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{padding-block:14px 0;display:grid;gap:12px}
+.titlerow{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px}
+h1{font-family:var(--f-display);font-weight:600;font-size:1.75rem;line-height:1.1;margin:0;color:var(--navy);text-wrap:balance}
+.sub{color:var(--ink-2);font-size:.9rem;margin-top:2px}
+.stats{display:flex;gap:18px;flex-wrap:wrap}
+.stat{display:grid}
+.stat b{font-family:var(--f-display);font-size:1.4rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--navy);line-height:1}
+.stat span{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+.tabs{display:flex;gap:4px}
+.tab{appearance:none;border:0;background:none;font:inherit;font-weight:600;color:var(--ink-2);padding:10px 14px;border-bottom:3px solid transparent;cursor:pointer}
+.tab[aria-selected="true"]{color:var(--navy);border-bottom-color:var(--accent)}
+.tab:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-block:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{appearance:none;font:inherit;font-size:.82rem;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 11px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:var(--surface)}
+.field-inline{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto}
+input,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-width:0}
+.btn{appearance:none;font:inherit;font-weight:600;font-size:.88rem;border-radius:8px;padding:8px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+main .wrap{padding-block:4px 40px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:14px;align-items:start}
+.col{min-width:0;display:grid;gap:10px}
+.colhead{display:flex;align-items:baseline;justify-content:space-between;gap:8px;padding-bottom:8px;border-bottom:3px solid var(--sc,var(--s-inne))}
+.colhead h2{font-family:var(--f-display);font-size:1.15rem;font-weight:600;margin:0;color:var(--navy)}
+.colhead .n{font-family:var(--f-mono);font-size:.8rem;color:var(--ink-2)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:grid;gap:8px;cursor:pointer;box-shadow:var(--shadow);text-align:left;font:inherit;color:inherit;width:100%}
+.card:hover{border-color:var(--accent)}
+.cardtop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.card h3{font-size:1rem;font-weight:700;margin:0;line-height:1.25}
+.meta{font-size:.82rem;color:var(--ink-2)}
+.pill{flex:none;font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.t-wysoka{color:var(--hi);background:var(--hi-bg)} .t-srednia{color:var(--mid);background:var(--mid-bg)} .t-niska{color:var(--lo);background:var(--lo-bg)}
+.depts{display:flex;flex-wrap:wrap;gap:4px}
+.dept{font-size:.72rem;font-weight:600;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--ink-2);background:var(--surface-2)}
+.line{font-size:.86rem}
+.line b{font-weight:600}
+.why{font-size:.82rem;color:var(--ink-2);border-left:2px solid var(--line);padding-left:8px}
+.crits{display:flex;flex-wrap:wrap;gap:4px}
+.crit{font-size:.68rem;font-weight:600;border-radius:4px;padding:1px 6px;border:1px solid transparent}
+.c-wysoka{color:var(--hi);background:var(--hi-bg)} .c-srednia{color:var(--mid);background:var(--mid-bg)} .c-niska{color:var(--lo);background:var(--lo-bg)} .c-none{color:var(--ink-2);border-color:var(--line);border-style:dashed}
+.ctable{width:100%;border-collapse:collapse;font-size:.86rem}
+.ctable td{border-top:1px solid var(--line);padding:6px 6px 6px 0;vertical-align:top}
+.ctable td:first-child{font-weight:600;white-space:nowrap;width:1%}
+.ctable td:nth-child(2){width:1%;white-space:nowrap}
+.calc{font-size:.85rem;color:var(--ink-2)}
+.foot{font-family:var(--f-mono);font-size:.72rem;color:var(--ink-2)}
+.empty{border:1px dashed var(--line);border-radius:10px;padding:14px;font-size:.85rem;color:var(--ink-2)}
+.inv{display:grid;gap:10px}
+.invrow{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:16px;align-items:start;background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--sc,var(--s-inne));border-radius:10px;padding:14px 16px;cursor:pointer;box-shadow:var(--shadow);text-align:left;font:inherit;color:inherit;width:100%}
+.invrow:hover{border-color:var(--accent);border-left-color:var(--sc,var(--s-inne))}
+.when{font-family:var(--f-mono);font-size:.82rem;color:var(--navy);font-weight:500}
+.when small{display:block;font-family:var(--f-body);font-size:.75rem;color:var(--ink-2);font-weight:400}
+.invrow h3{font-size:1rem;margin:0 0 2px}
+.right{display:grid;gap:6px;justify-items:end}
+.st{font-size:.72rem;font-weight:600;border-radius:4px;padding:2px 7px;border:1px solid var(--line);white-space:nowrap}
+.st-wstrzymana{text-decoration:line-through;color:var(--ink-2)}
+.jobs{font-family:var(--f-display);font-weight:600;font-size:1.2rem;color:var(--navy);font-variant-numeric:tabular-nums}
+.invrow.stopped{opacity:.7}
+@media (max-width:640px){.invrow{grid-template-columns:1fr}.right{justify-items:start;grid-auto-flow:column;justify-content:start;align-items:center}}
+.overlay{position:fixed;inset:0;background:rgba(8,20,30,.45);z-index:20;display:flex;justify-content:center;align-items:flex-start;overflow:auto;padding:24px 16px}
+.modal{background:var(--surface);color:var(--ink);border-radius:12px;width:100%;max-width:640px;padding:20px;display:grid;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.modal h2{font-family:var(--f-display);font-weight:600;font-size:1.4rem;margin:0;color:var(--navy)}
+.dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 14px;font-size:.9rem}
+.dl dt{color:var(--ink-2);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;padding-top:2px}
+.dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+@media (max-width:520px){.dl{grid-template-columns:1fr}.dl dt{padding-top:6px}}
+.srcs{display:grid;gap:4px;margin:0;padding-left:18px}
+a{color:var(--accent)}
+.actions{display:flex;justify-content:flex-end}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--ink-2);padding-bottom:6px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="titlerow">
+      <div>
+        <h1>Mapa konkurencji</h1>
+        <div class="sub">Kongsberg Maritime Poland · rynek pracy Szczecin i okolice · <span id="snap"></span></div>
+      </div>
+      <div class="stats" id="stats" aria-live="polite"></div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" id="tab-board" aria-selected="true" aria-controls="view-board">Tablica sektorów</button>
+      <button class="tab" role="tab" id="tab-inv" aria-selected="false" aria-controls="view-inv">Inwestycje</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="toolbar">
+      <div class="chips" id="deptChips" aria-label="Filtr: konkuruje o dział"></div>
+      <div class="field-inline">
+        <select id="threatFilter" aria-label="Siła konkurencji">
+          <option value="">Każda siła konkurencji</option>
+          <option value="wysoka">Wysoka</option>
+          <option value="srednia">Średnia</option>
+          <option value="niska">Niska</option>
+        </select>
+        <input id="q" type="search" placeholder="Szukaj firmy lub profilu" aria-label="Szukaj">
+      </div>
+    </div>
+
+    <section id="view-board" role="tabpanel" aria-labelledby="tab-board">
+      <div class="legend">Siła konkurencji wynika z trzech kryteriów: pokrycia profili (liczy się podwójnie), dynamiki zatrudnienia oraz płac i warunków. Kliknij kartę, aby zobaczyć szczegóły i źródła.</div>
+      <div class="board" id="board"></div>
+    </section>
+
+    <section id="view-inv" role="tabpanel" aria-labelledby="tab-inv" hidden>
+      <div class="legend">Planowane i trwające inwestycje w regionie, które mogą zwiększyć konkurencję o naszych ludzi. Kolejność: od najbliższego terminu.</div>
+      <div class="inv" id="inv"></div>
+    </section>
+  </div>
+</main>
+
+<div id="modalRoot"></div>
+
+<script src="data.js"></script>
+<script>
+(function(){
+const DATA=window.MAPA_DATA||{firms:[],investments:[],sectors:[]};
+const DEPTS=[["cs","Customer Support"],["project","Project"],["tech","Technology"],["ss","Shared Services"],["fin","Finance"],["hr","HR & Business Support"]];
+const DEPT=Object.fromEntries(DEPTS);
+const THREAT={wysoka:"Wysoka",srednia:"Średnia",niska:"Niska"};
+const TORDER={wysoka:0,srednia:1,niska:2};
+const CRIT=[["profiles","Pokrycie profili"],["dynamics","Dynamika zatrudnienia"],["pay","Płace i warunki"]];
+const CW={profiles:2,dynamics:1,pay:1};
+const LV={wysoka:3,srednia:2,niska:1};
+const STATUS={zapowiedz:"Zapowiedź",realizacja:"W realizacji",dziala:"Działa",wstrzymana:"Wstrzymana"};
+const SCOLOR={morska:"var(--s-morska)",wiatr:"var(--s-wiatr)",przemysl:"var(--s-przem)",it:"var(--s-it)",bss:"var(--s-bss)"};
+
+function computed(f){
+  const c=f.criteria||{};let s=0,w=0;
+  for(const [k] of CRIT){const l=c[k]&&c[k].level;if(LV[l]){s+=LV[l]*CW[k];w+=CW[k];}}
+  if(!w)return "";const a=s/w;return a>=2.5?"wysoka":a>=1.75?"srednia":"niska";
+}
+const eff=f=>f.threatOverride||computed(f)||f.threat||"";
+
+const state={view:"board",dept:"",threat:"",q:"",firms:DATA.firms||[],inv:DATA.investments||[],sectors:DATA.sectors||[]};
+if(location.hash==="#inwestycje")state.view="inv";
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+const fmtDate=d=>{if(!d)return"";const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(d);return m?`${m[3]}.${m[2]}.${m[1]}`:d;};
+const sectorName=id=>(state.sectors.find(s=>s.id===id)||{name:id||"Inne"}).name;
+const sectorColor=id=>SCOLOR[id]||"var(--s-inne)";
+const critDots=f=>{const c=f.criteria||{};if(!Object.keys(c).length)return"";return `<div class="crits">${CRIT.map(([k,l])=>{const v=c[k]&&c[k].level;return `<span class="crit c-${v||"none"}" title="${esc(l)}: ${v?esc(THREAT[v]):"brak danych"}">${esc(l.split(" ")[0])}</span>`;}).join("")}</div>`;};
+const deptTags=ds=>(ds&&ds.length)?`<div class="depts">${ds.map(d=>`<span class="dept">${esc(DEPT[d]||d)}</span>`).join("")}</div>`:"";
+const threatPill=t=>t?`<span class="pill t-${esc(t)}">${esc(THREAT[t]||t)}</span>`:"";
+
+$("#snap").textContent="stan na "+fmtDate(DATA.snapshot||"");
+
+function renderChips(){
+  const all=[["","Wszystkie działy"],...DEPTS];
+  $("#deptChips").innerHTML=all.map(([k,l])=>`<button class="chip" data-dept="${k}" aria-pressed="${state.dept===k}">${esc(l)}</button>`).join("");
+}
+$("#deptChips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;state.dept=b.dataset.dept;renderChips();render();});
+$("#threatFilter").addEventListener("change",e=>{state.threat=e.target.value;render();});
+$("#q").addEventListener("input",e=>{state.q=e.target.value.trim().toLowerCase();render();});
+
+function setView(v){
+  state.view=v;
+  for(const k of ["board","inv"]){$("#tab-"+k).setAttribute("aria-selected",v===k);$("#view-"+k).hidden=v!==k;}
+}
+$("#tab-board").addEventListener("click",()=>setView("board"));
+$("#tab-inv").addEventListener("click",()=>setView("inv"));
+
+function matches(x,nameField){
+  if(state.dept&&!(x.depts||[]).includes(state.dept))return false;
+  if(state.threat&&(nameField==="name"?eff(x):x.threat)!==state.threat)return false;
+  if(state.q){
+    const hay=[x[nameField],x.about,x.profiles,x.location,x.notes,x.pay,x.threatWhy].join(" ").toLowerCase();
+    if(!hay.includes(state.q))return false;
+  }
+  return true;
+}
+
+function renderStats(){
+  const hi=state.firms.filter(f=>eff(f)==="wysoka").length;
+  const act=state.inv.filter(i=>i.status!=="wstrzymana").length;
+  $("#stats").innerHTML=`<div class="stat"><b>${state.firms.length}</b><span>firm</span></div><div class="stat"><b>${hi}</b><span>silna konkurencja</span></div><div class="stat"><b>${act}</b><span>aktywne inwestycje</span></div>`;
+}
+
+function renderBoard(){
+  const known=new Set(state.sectors.map(s=>s.id));
+  const cols=[...state.sectors];
+  if(state.firms.some(f=>!known.has(f.sector)))cols.push({id:"__inne",name:"Inne"});
+  $("#board").innerHTML=cols.map(s=>{
+    const items=state.firms.filter(f=>(s.id==="__inne"?!known.has(f.sector):f.sector===s.id)&&matches(f,"name"))
+      .sort((a,b)=>(TORDER[eff(a)]??3)-(TORDER[eff(b)]??3)||String(a.name).localeCompare(String(b.name),"pl"));
+    const cards=items.map(f=>`<button class="card" data-kind="firm" data-id="${esc(f._id)}">
+        <div class="cardtop"><h3>${esc(f.name)}</h3>${threatPill(eff(f))}</div>
+        ${critDots(f)}
+        ${f.location?`<div class="meta">${esc(f.location)}</div>`:""}
+        ${f.profiles?`<div class="line"><b>Rekrutuje:</b> ${esc(f.profiles)}</div>`:""}
+        ${f.pay?`<div class="line"><b>Płace:</b> ${esc(f.pay)}</div>`:""}
+        ${f.threatWhy?`<div class="why">${esc(f.threatWhy)}</div>`:""}
+        ${deptTags(f.depts)}
+        ${f.updated?`<div class="foot">aktualizacja ${esc(fmtDate(f.updated))}</div>`:""}
+      </button>`).join("");
+    const empty=`<div class="empty">Brak firm dla wybranych filtrów.</div>`;
+    return `<div class="col" style="--sc:${s.id==="__inne"?"var(--s-inne)":sectorColor(s.id)}"><div class="colhead"><h2>${esc(s.name)}</h2><span class="n">${items.length}</span></div>${cards||empty}</div>`;
+  }).join("");
+}
+
+function renderInv(){
+  const items=state.inv.filter(i=>matches(i,"company")).sort((a,b)=>{
+    const sa=a.status==="wstrzymana"?1:0,sb=b.status==="wstrzymana"?1:0;
+    return sa-sb||(a.sortDate||"9999").localeCompare(b.sortDate||"9999");
+  });
+  if(!items.length){$("#inv").innerHTML=`<div class="empty">Brak inwestycji dla wybranych filtrów.</div>`;return;}
+  $("#inv").innerHTML=items.map(i=>`<button class="invrow${i.status==="wstrzymana"?" stopped":""}" data-kind="inv" data-id="${esc(i._id)}" style="--sc:${sectorColor(i.sector)}">
+      <div class="when">${esc(i.timing||"termin nieznany")}<small>${esc(sectorName(i.sector))}</small></div>
+      <div><h3>${esc(i.company)}</h3><div class="meta">${esc(i.location||"")}</div>${i.about?`<div class="line">${esc(i.about)}</div>`:""}${i.threatWhy?`<div class="why" style="margin-top:6px">${esc(i.threatWhy)}</div>`:""}${deptTags(i.depts)}</div>
+      <div class="right">${i.jobs?`<span class="jobs">${esc(i.jobs)}</span>`:""}<span class="st st-${esc(i.status)}">${esc(STATUS[i.status]||i.status||"")}</span>${threatPill(i.threat)}</div>
+    </button>`).join("");
+}
+
+function render(){renderStats();renderBoard();renderInv();}
+
+document.addEventListener("click",e=>{
+  const el=e.target.closest("[data-kind]");if(!el)return;
+  const rec=(el.dataset.kind==="firm"?state.firms:state.inv).find(x=>x._id===el.dataset.id);
+  if(rec)openDetail(el.dataset.kind,rec);
+});
+
+let lastFocus=null;
+function openModal(html){
+  lastFocus=document.activeElement;
+  $("#modalRoot").innerHTML=`<div class="overlay" id="ov"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
+  const ov=$("#ov");
+  ov.addEventListener("click",e=>{if(e.target===ov)closeModal();});
+  const f=ov.querySelector("button");if(f)f.focus();
+}
+function closeModal(){$("#modalRoot").innerHTML="";if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&$("#ov"))closeModal();});
+
+function srcList(s){
+  if(!s||!s.length)return"—";
+  return `<ol class="srcs">${s.map(x=>{const u=safeUrl(x.url);const lbl=esc(x.label||x.url||"źródło");return `<li>${u?`<a href="${esc(u)}" target="_blank" rel="noopener">${lbl}</a>`:lbl}${x.date?` · ${esc(x.date)}`:""}</li>`;}).join("")}</ol>`;
+}
+function overallHtml(r){
+  const c=computed(r),e=eff(r);
+  if(!e)return "—";
+  let note="";
+  if(r.threatOverride)note=c?`korekta ręczna; z kryteriów wychodzi: ${THREAT[c]}`:"ocena ręczna";
+  else if(c)note="wyliczona z kryteriów";
+  return `${threatPill(e)}${note?` <span class="calc">${esc(note)}</span>`:""}`;
+}
+function critTable(r){
+  const c=r.criteria||{};
+  return `<table class="ctable"><tbody>${CRIT.map(([k,l])=>{const x=c[k]||{};return `<tr><td>${esc(l)}</td><td>${x.level?threatPill(x.level):'<span class="crit c-none">brak danych</span>'}</td><td>${esc(x.note||"")}</td></tr>`;}).join("")}</tbody></table><div class="calc" style="margin-top:6px">Pokrycie profili liczy się podwójnie. Szybki wzrost zatrudnienia i wysokie płace oznaczają silniejszą konkurencję.</div>`;
+}
+function openDetail(kind,r){
+  const isF=kind==="firm";
+  const rows=isF?[
+    ["Sektor",esc(sectorName(r.sector))],["Lokalizacja",esc(r.location||"—")],["Czym się zajmuje",esc(r.about||"—")],
+    ["Konkuruje o działy",deptTags(r.depts)||"—"],["Rekrutuje",esc(r.profiles||"—")],["Płace",esc(r.pay||"—")],
+    ["Siła konkurencji",overallHtml(r)],["Kryteria",critTable(r)],["Komentarz do oceny",esc(r.threatWhy||"—")],["Notatki",esc(r.notes||"—")],["Źródła",srcList(r.sources)],["Aktualizacja",esc(fmtDate(r.updated)||"—")]
+  ]:[
+    ["Sektor",esc(sectorName(r.sector))],["Lokalizacja",esc(r.location||"—")],["Inwestycja",esc(r.about||"—")],
+    ["Miejsca pracy",esc(r.jobs||"—")],["Termin",esc(r.timing||"—")],["Status",esc(STATUS[r.status]||"—")],
+    ["Konkuruje o działy",deptTags(r.depts)||"—"],["Szukane profile",esc(r.profiles||"—")],["Siła konkurencji",threatPill(r.threat)||"—"],["Dlaczego taka ocena",esc(r.threatWhy||"—")],
+    ["Notatki",esc(r.notes||"—")],["Źródła",srcList(r.sources)],["Aktualizacja",esc(fmtDate(r.updated)||"—")]
+  ];
+  openModal(`<h2>${esc(isF?r.name:r.company)}</h2><dl class="dl">${rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join("")}</dl>
+    <div class="actions"><button class="btn primary" id="closeB">Zamknij</button></div>`);
+  $("#closeB").onclick=closeModal;
+}
+
+renderChips();setView(state.view);render();
+})();
+</script>
+</body>
+</html>
